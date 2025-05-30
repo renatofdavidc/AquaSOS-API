@@ -1,11 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using AquaSOS.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddRazorPages(); // Razor Pages
-builder.Services.AddEndpointsApiExplorer(); // Swagger
+builder.Services.AddRazorPages();
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// AddDbContext<ApplicationDbContext>(...) etc.
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseOracle(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 var app = builder.Build();
 
@@ -15,11 +20,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseStaticFiles(); // para Razor
+app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
 
-app.MapControllers(); // API REST
-app.MapRazorPages();  // Razor Pages
+app.MapControllers();
+app.MapRazorPages();
 
 app.Run();
